@@ -1,0 +1,57 @@
+/* --- ARREGLOS URGENTES DE DISEÑO --- */
+:root {
+    --color-fondo: #fdfbf7;
+    --color-primario: #92A8D1;    /* EL NUEVO COLOR LILA/CELESTE */
+    --color-secundario: #7FA1C3;  /* Un tono un poco más oscuro para contrastes */
+    --color-texto: #4A4A4A;
+    --color-acento: #88B04B;      /* El verde queda solo para detalles */
+}
+/* Arreglo para el Memotest (Cartas cortadas) */
+.tablero-memoria {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Cartas más chicas para que entren */
+    gap: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.carta-memoria {
+    aspect-ratio: 1 / 1; /* Asegura que sean cuadradas */
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.carta-inner, .carta-frente, .carta-dorso {
+    width: 100%;
+    height: 100%;
+}
+
+/* Arreglo general para imágenes en contenedores de juego */
+.zona-juego img, 
+.game-area img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain; /* Clave: evita que la imagen se recorte si no entra */
+    border-radius: 15px;
+}
+
+/* Arreglo para la caja del juego que se ve rota en la segunda captura */
+.game-card, .game-conteiner-pro {
+    width: 95%; /* Un poco de margen en móviles */
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    overflow: hidden; /* Asegura que nada se salga de la caja redondeada */
+}
+
+.game-area, .game-body {
+    padding: 20px;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
