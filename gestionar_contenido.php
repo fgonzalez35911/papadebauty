@@ -15,27 +15,24 @@ if($id_juego) {
 
 // --- PROCESAR SUBIDA ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['guardar'])) {
-    
-    // Recogemos los datos básicos
     $texto = $conn->real_escape_string($_POST['texto'] ?? ''); 
     $d1 = $conn->real_escape_string($_POST['d1'] ?? '');
     $d2 = $conn->real_escape_string($_POST['d2'] ?? '');
     $d3 = $conn->real_escape_string($_POST['d3'] ?? '');
     
-    // Directorios para imágenes/audio (si hicieran falta)
     $dir_img = "../assets/uploads/juegos/";
     $dir_aud = "../assets/uploads/audios/";
     if (!file_exists($dir_img)) mkdir($dir_img, 0777, true);
     if (!file_exists($dir_aud)) mkdir($dir_aud, 0777, true);
 
-    // 1. Campo IMAGEN (Puede ser un archivo O una palabra pregunta)
+    // 1. IMAGEN (O PALABRA PREGUNTA)
     $ruta_img = "";
     
-    // CASO ESPECIAL: Si es juego de texto, la "imagen" es la PALABRA PREGUNTA que viene del input
-    if (isset($_POST['palabra_pregunta']) && !empty($_POST['palabra_pregunta'])) {
+    // CASO ESPECIAL: SI ES JUEGO DE TEXTO, GUARDAMOS LA PALABRA EN LA COLUMNA IMAGEN
+    if (isset($_POST['palabra_pregunta'])) {
         $ruta_img = $conn->real_escape_string($_POST['palabra_pregunta']);
     } 
-    // CASO NORMAL: Subida de archivo
+    // SI ES JUEGO NORMAL, SUBIMOS LA FOTO
     elseif (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
         $ext = pathinfo($_FILES["imagen"]["name"], PATHINFO_EXTENSION);
         $name = $id_juego . "_img_" . time() . "." . $ext;
@@ -44,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['guardar'])) {
         }
     }
 
-    // 2. Imagen Extra (Solo para Asociación de Imágenes)
+    // 2. IMAGEN EXTRA (SOLO ASOCIACIÓN)
     $ruta_img_extra = "";
     if (isset($_FILES['imagen_extra']) && $_FILES['imagen_extra']['error'] == 0) {
         $ext = pathinfo($_FILES["imagen_extra"]["name"], PATHINFO_EXTENSION);
@@ -54,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['guardar'])) {
         }
     }
 
-    // 3. Audio
+    // 3. AUDIO
     $ruta_aud = "";
     if (isset($_FILES['audio']) && $_FILES['audio']['error'] == 0) {
         $ext = pathinfo($_FILES["audio"]["name"], PATHINFO_EXTENSION);
@@ -77,18 +74,15 @@ if (isset($_GET['del'])) {
     header("Location: gestionar_contenido.php?id_juego=$id_juego"); exit;
 }
 
-// Instrucciones dinámicas
+// Instrucciones
 function getInstrucciones($tipo) {
     switch($tipo) {
         case 'seleccion': return ['t'=>'Preguntas / Selección', 'd'=>'Sube una imagen y la respuesta correcta.'];
-        case 'memoria': return ['t'=>'Memotest', 'd'=>'Sube solo la imagen. El sistema crea la pareja automáticamente.'];
-        case 'secuencia': return ['t'=>'Ordenar Secuencia', 'd'=>'Sube los pasos EN ORDEN (1, 2, 3...).'];
+        case 'memoria': return ['t'=>'Memotest', 'd'=>'Sube solo la imagen. El sistema crea la pareja.'];
+        case 'secuencia': return ['t'=>'Ordenar Secuencia', 'd'=>'Sube los pasos EN ORDEN.'];
         case 'pintura': return ['t'=>'Arte / Pintura', 'd'=>'Sube dibujo en blanco y negro.'];
-        case 'asociacion': return ['t'=>'Asociación Imágenes', 'd'=>'Sube 2 imágenes para unir (Ej: Sol y Luna).'];
-        
-        // NUEVO TIPO AGREGADO AL PANEL
-        case 'texto_drag': return ['t'=>'Arrastrar Palabras', 'd'=>'Aquí NO subas fotos. Escribe la Palabra Pregunta (Fija) y la Respuesta (Móvil).', 'ejemplo'=>'<b>Ejemplo:</b><br>Palabra Fija: DÍA<br>Respuesta Correcta: NOCHE<br>Distractores: SOL, LUZ, TARDE'];
-        
+        case 'asociacion': return ['t'=>'Asociación Imágenes', 'd'=>'Sube 2 imágenes para unir.'];
+        case 'texto_drag': return ['t'=>'Arrastrar Palabras', 'd'=>'Escribe la palabra PREGUNTA y la palabra RESPUESTA. Sin imágenes.', 'ejemplo'=>'<b>Ejemplo:</b><br>Pregunta: GRANDE<br>Correcta: PEQUEÑO<br>Incorrectas: SUCIO, LENTO.'];
         default: return ['t'=>'', 'd'=>''];
     }
 }
@@ -97,7 +91,6 @@ function getInstrucciones($tipo) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestor de Contenido</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -139,7 +132,6 @@ function getInstrucciones($tipo) {
         
         <div class="col-md-8">
             <?php if($juego): $info = getInstrucciones($juego['tipo_juego']); ?>
-                
                 <div class="alert alert-info shadow-sm border-0" style="border-left: 5px solid #0dcaf0;">
                     <h5 class="alert-heading fw-bold"><i class="fa-solid fa-lightbulb"></i> <?php echo $info['t']; ?></h5>
                     <p class="mb-0"><?php echo $info['d']; ?></p>
@@ -152,19 +144,17 @@ function getInstrucciones($tipo) {
                     <?php if($juego['tipo_juego'] == 'texto_drag'): ?>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-primary" style="font-size:1.1rem;">1. Palabra FIJA (Pregunta)</label>
-                                <input type="text" name="palabra_pregunta" class="form-control form-control-lg border-primary" placeholder="Ej: GRANDE" required>
+                                <label class="form-label fw-bold text-primary">1. Palabra Pregunta (La fija)</label>
+                                <input type="text" name="palabra_pregunta" class="form-control border-primary" placeholder="Ej: GRANDE" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-success" style="font-size:1.1rem;">2. Palabra CORRECTA (Móvil)</label>
-                                <input type="text" name="texto" class="form-control form-control-lg border-success" placeholder="Ej: PEQUEÑO" required>
+                                <label class="form-label fw-bold text-success">2. Respuesta Correcta (Arrastrable)</label>
+                                <input type="text" name="texto" class="form-control border-success" placeholder="Ej: PEQUEÑO" required>
                             </div>
-                            
-                            <div class="col-12"><hr> <label class="form-label fw-bold text-muted">Opciones Incorrectas (Distractores)</label></div>
-                            
-                            <div class="col-md-4"><input type="text" name="d1" class="form-control" placeholder="Incorrecta 1" required></div>
-                            <div class="col-md-4"><input type="text" name="d2" class="form-control" placeholder="Incorrecta 2" required></div>
-                            <div class="col-md-4"><input type="text" name="d3" class="form-control" placeholder="Incorrecta 3" required></div>
+                            <div class="col-12"><hr></div>
+                            <div class="col-md-4"><input type="text" name="d1" class="form-control" placeholder="Distractor 1" required></div>
+                            <div class="col-md-4"><input type="text" name="d2" class="form-control" placeholder="Distractor 2" required></div>
+                            <div class="col-md-4"><input type="text" name="d3" class="form-control" placeholder="Distractor 3" required></div>
                         </div>
 
                     <?php else: ?>
@@ -204,21 +194,20 @@ function getInstrucciones($tipo) {
                         <?php endif; ?>
                     <?php endif; ?>
 
-                    <button type="submit" name="guardar" class="btn btn-success mt-4 fw-bold py-2" style="width:100%;">GUARDAR FICHA</button>
+                    <button type="submit" name="guardar" class="btn btn-success mt-4 fw-bold py-2">GUARDAR FICHA</button>
                 </form>
 
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-light fw-bold">Contenido Cargado</div>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
-                            <thead><tr><th>Contenido</th><th>Respuesta</th><th width="50"></th></tr></thead>
+                            <thead><tr><th>Img / Pregunta</th><th>Datos</th><th width="50"></th></tr></thead>
                             <tbody>
                                 <?php if($contenido->num_rows > 0): while($row = $contenido->fetch_assoc()): ?>
                                     <tr>
                                         <td>
                                             <?php if($juego['tipo_juego']=='texto_drag'): ?>
-                                                <span class="badge bg-primary fs-6"><?php echo $row['imagen']; ?></span>
-                                            <?php elseif($row['imagen']): ?>
+                                                <strong class="text-primary"><?php echo $row['imagen']; ?></strong> <?php elseif($row['imagen']): ?>
                                                 <img src="../<?php echo $row['imagen']; ?>" width="40">
                                             <?php else: ?><span class="text-muted">-</span><?php endif; ?>
                                         </td>
