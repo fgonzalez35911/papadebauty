@@ -1,4 +1,17 @@
 <?php
+// 1. ESTO ES LO NUEVO (Ponelo arriba de todo)
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+
+// Si viene de la app con la clave, saltamos la verificación de sesión de la web
+if (isset($_GET['token']) && $_GET['token'] === 'Bauty2026') {
+    // No hace falta hacer nada, dejamos que el código de abajo siga
+} else {
+    // 2. ACÁ EMPIEZA TU CÓDIGO DE SIEMPRE
+    // (Tu validación de sesión, tu conexión a DB y tu SELECT)
+    // session_start();
+    // if(!isset($_SESSION['admin'])){ die("No autorizado"); }
+}
 // includes/juegos_data.php
 
 $biblioteca_juegos = [
@@ -50,4 +63,9 @@ $biblioteca_juegos = [
     
     // ... Puedes seguir agregando hasta 50 copiando la estructura
 ];
+
+// ESTO ES LO QUE FALTA: Convertir el array a texto y mostrarlo
+if (isset($_GET['token']) && $_GET['token'] === 'Bauty2026') {
+    echo json_encode($biblioteca_juegos, JSON_UNESCAPED_UNICODE);
+}
 ?>

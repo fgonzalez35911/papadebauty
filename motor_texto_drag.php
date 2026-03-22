@@ -9,10 +9,10 @@
         padding-bottom: 100px; overflow-x: hidden; 
     }
 
-    /* --- ESTILOS DE LA PANTALLA FINAL (FIESTA TOTAL) --- */
+    /* --- PANTALLA FINAL --- */
     .final-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); /* Degradado violeta/rosa */
+        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
         z-index: 10000;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         animation: fadeIn 0.5s ease-out;
@@ -22,7 +22,7 @@
         background: white; padding: 40px 30px; border-radius: 40px;
         text-align: center; 
         box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-        border: 6px solid #FFD700; /* Borde Dorado */
+        border: 6px solid #FFD700;
         width: 90%; max-width: 500px;
         position: relative; z-index: 10;
         animation: bounceIn 1s cubic-bezier(0.215, 0.610, 0.355, 1.000);
@@ -65,7 +65,7 @@
         100% { transform: scale(1); } 
     }
 
-    /* --- ESTILOS DEL JUEGO (ORIGINALES QUE FUNCIONABAN) --- */
+    /* --- ESTILOS JUEGO --- */
     .zona-pregunta {
         display: flex; align-items: center; justify-content: center; 
         gap: 20px; margin-bottom: 40px;
@@ -105,23 +105,27 @@
         padding: 12px 25px; border-radius: 12px;
         cursor: grab; box-shadow: 0 5px 0 #ddd; 
         position: relative; min-width: 140px; text-align: center;
-        
-        touch-action: none; /* Bloquea scroll solo en la ficha */
+        touch-action: none; 
+        display: flex; align-items: center; justify-content: center;
     }
     
-    /* ESTILO ARRASTRANDO (VOLVEMOS AL ORIGINAL QUE TE GUSTABA) */
+    /* ESTILO ARRASTRANDO */
     .ficha-drag.arrastrando { 
-        cursor: grabbing; position: fixed !important; z-index: 9999 !important; 
-        opacity: 0.95 !important; transform: scale(1.1);
+        cursor: grabbing; 
+        /* Se usa fixed para que siga al mouse sin importar el scroll o contenedores */
+        position: fixed !important; 
+        z-index: 100000 !important; /* Z-index altísimo para ganar al fullscreen */
+        opacity: 0.95 !important; 
+        transform: scale(1.1);
         box-shadow: 0 15px 30px rgba(0,0,0,0.3) !important;
-        border-color: #92A8D1; margin: 0 !important;
+        border-color: #92A8D1; 
+        margin: 0 !important;
     }
     
     .ficha-drag.correcta { 
         background: #88B04B; color: white; border-color: #6a8f3d; 
         box-shadow: none; pointer-events: none; cursor: default; 
         width: 100%; height: 100%; margin: 0; border: none; border-radius: 0; 
-        display: flex; align-items: center; justify-content: center; 
     }
     .ficha-drag.incorrecta { animation: shake 0.4s; background: #FF6B6B; color: white; border-color: #d32f2f; }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
@@ -132,8 +136,6 @@
         .ficha-fija { width: 90%; max-width: 280px; font-size: 1.4rem; padding: 15px 10px; margin: 0 auto; }
         .slot-destino { width: 90%; max-width: 280px; height: 75px; margin: 0 auto; }
         .ficha-drag { font-size: 1.1rem; padding: 10px 15px; min-width: 100px; width: 45%; box-sizing: border-box; }
-        
-        /* Ajuste botones finales móvil */
         .winner-title { font-size: 2.5rem; }
         .btn-winner { padding: 15px; font-size: 1rem; }
     }
@@ -151,35 +153,29 @@
 
     let indice = 0;
     let dragItem = null;
+    let placeholder = null; 
     
-    // Variables de posición (Lógica original)
     let offsetX = 0;
     let offsetY = 0;
 
     function cargarNivel() {
-        // --- PANTALLA FINAL (FIESTA NUEVA) ---
+        // --- PANTALLA FINAL ---
         if(indice >= datos.length) {
             lienzo.innerHTML = ''; 
-            
             const overlay = document.createElement('div');
             overlay.className = 'final-overlay';
-            
             overlay.innerHTML = `
                 <div class="winner-card">
                     <h1 class="winner-title">¡FELICITACIONES! 🎉</h1>
                     <div style="font-size:4rem; margin:10px 0; animation: bounceIn 2s infinite;">🏆</div>
                     <p class="winner-text">¡Sos un campeón! Completaste todo.</p>
-                    
-                    <button onclick="location.reload()" class="btn-winner btn-replay">
-                        <i class="fa-solid fa-rotate-right"></i> Jugar de nuevo
-                    </button>
-                    <a href="juegos.php" class="btn-winner btn-menu">
-                        <i class="fa-solid fa-gamepad"></i> Ir al Menú
-                    </a>
-                </div>
-            `;
+                    <button onclick="location.reload()" class="btn-winner btn-replay"><i class="fa-solid fa-rotate-right"></i> Jugar de nuevo</button>
+                    <a href="juegos.php" class="btn-winner btn-menu"><i class="fa-solid fa-gamepad"></i> Ir al Menú</a>
+                </div>`;
+            // Append al contenedor de fullscreen si existe, sino al body
+            const parent = document.fullscreenElement || document.body;
+            parent.appendChild(overlay);
             
-            document.body.appendChild(overlay);
             lanzarConfeti(overlay);
             playFx(true); 
             return;
@@ -208,7 +204,6 @@
         activarEventos();
     }
 
-    // --- FUNCIÓN CONFETI ---
     function lanzarConfeti(container) {
         const colores = ['#FFC107', '#FF5722', '#4CAF50', '#2196F3', '#E91E63', '#9C27B0'];
         for (let i = 0; i < 100; i++) { 
@@ -222,7 +217,6 @@
         }
     }
 
-    // --- LÓGICA DE ARRASTRE ORIGINAL (La que te gustaba antes) ---
     function activarEventos() {
         const fichas = document.querySelectorAll('.ficha-drag');
         fichas.forEach(f => {
@@ -241,13 +235,31 @@
         const clienteX = e.clientX || e.touches[0].clientX;
         const clienteY = e.clientY || e.touches[0].clientY;
 
-        // Calculamos offset para agarrar del centro (más estable)
+        // Calculamos offset desde el centro
         offsetX = clienteX - rect.left;
         offsetY = clienteY - rect.top;
 
-        // Preparamos para mover
+        // 1. CREAR PLACEHOLDER
+        placeholder = document.createElement('div');
+        placeholder.className = 'ficha-drag placeholder';
+        placeholder.style.width = rect.width + 'px';
+        placeholder.style.height = rect.height + 'px';
+        placeholder.style.visibility = 'hidden'; 
+        placeholder.style.border = 'none';
+        placeholder.style.boxShadow = 'none';
+        
+        dragItem.parentNode.insertBefore(placeholder, dragItem);
+
+        // 2. DETECTAR EL CONTENEDOR CORRECTO (SOLUCIÓN FULLSCREEN)
+        // Si hay fullscreen, adjuntamos ahí. Si no, al body.
+        const container = document.fullscreenElement || document.body;
+        container.appendChild(dragItem);
+
+        // Configurar estilos fijos
         dragItem.style.width = rect.width + 'px';
         dragItem.style.height = rect.height + 'px';
+        dragItem.style.position = 'fixed'; 
+        dragItem.style.zIndex = 10000;
         dragItem.classList.add('arrastrando');
 
         // Mover inmediatamente al lugar
@@ -261,14 +273,13 @@
 
     function moverArrastre(e) {
         if (!dragItem) return;
-        e.preventDefault();
+        e.preventDefault(); 
         const clienteX = e.clientX || e.touches[0].clientX;
         const clienteY = e.clientY || e.touches[0].clientY;
         moverItem(clienteX, clienteY);
     }
 
     function moverItem(x, y) {
-        // Movimiento directo (sin clones)
         dragItem.style.left = (x - offsetX) + 'px';
         dragItem.style.top = (y - offsetY) + 'px';
     }
@@ -281,15 +292,17 @@
         document.removeEventListener('mouseup', finalizarArrastre);
         document.removeEventListener('touchend', finalizarArrastre);
 
-        // Detectar dónde soltó
         const x = e.clientX || (e.changedTouches ? e.changedTouches[0].clientX : 0);
         const y = e.clientY || (e.changedTouches ? e.changedTouches[0].clientY : 0);
 
-        // Ocultar para ver abajo
+        // Ocultar ficha un momento para ver qué hay abajo
         dragItem.style.display = 'none';
+        
+        // Element From Point funciona relativo al viewport, igual que nuestro dragItem fixed
         let elemAbajo = document.elementFromPoint(x, y);
-        dragItem.style.display = 'flex'; // Restaurar display original
+        dragItem.style.display = 'flex'; 
 
+        // Buscar si soltamos sobre el slot (incluso si está dentro del shadow DOM del fullscreen)
         const slot = elemAbajo ? elemAbajo.closest('#slot-meta') : null;
 
         if (slot) {
@@ -304,22 +317,29 @@
 
     function verificar(ficha, slot) {
         if (ficha.dataset.valor === slot.dataset.target) {
+            // CORRECTO
             playFx(true);
             slot.innerHTML = '';
-            // Reseteamos estilos para que entre en el slot
+            
+            // Limpiar estilos del drag
             ficha.style.position = 'static';
             ficha.style.width = '100%';
             ficha.style.height = '100%';
-            ficha.style.left = ''; 
+            ficha.style.zIndex = '';
+            ficha.style.left = '';
             ficha.style.top = '';
             ficha.style.margin = '0';
             
             ficha.classList.add('correcta');
-            slot.appendChild(ficha);
+            slot.appendChild(ficha); 
             slot.classList.add('lleno');
+
+            if(placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+            placeholder = null;
 
             setTimeout(() => { indice++; cargarNivel(); }, 1000);
         } else {
+            // INCORRECTO
             resetFicha(ficha);
             playFx(false);
             ficha.classList.add('incorrecta');
@@ -328,12 +348,23 @@
     }
 
     function resetFicha(el) {
-        el.classList.remove('arrastrando');
+        // Devolver la ficha a su lugar original
+        if(placeholder && placeholder.parentNode) {
+            placeholder.parentNode.insertBefore(el, placeholder);
+            placeholder.parentNode.removeChild(placeholder);
+        } else {
+            // Fallback si se perdió el placeholder
+            document.querySelector('.zona-opciones').appendChild(el);
+        }
+        placeholder = null;
+
+        // Resetear estilos
         el.style.position = 'relative';
         el.style.left = '';
         el.style.top = '';
-        el.style.width = ''; // Volver al ancho automático
+        el.style.width = '';
         el.style.height = '';
+        el.style.zIndex = '';
     }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
