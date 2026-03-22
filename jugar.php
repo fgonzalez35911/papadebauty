@@ -19,16 +19,18 @@ if (!$juego) {
     echo "Juego no encontrado."; require 'includes/footer.php'; exit;
 }
 
-// 2. BUSCAR CONTENIDO MANUAL
-$sql_contenido = "SELECT imagen, palabra_correcta, distractor1, distractor2, distractor3, audio 
-                  FROM juegos_contenido WHERE id_juego = $game_id ORDER BY id ASC";
+// 2. BUSCAR CONTENIDO (CORREGIDO: Usamos SELECT * para traer las nuevas columnas de fotos y preguntas)
+$sql_contenido = "SELECT * FROM juegos_contenido WHERE id_juego = $game_id ORDER BY orden ASC, id ASC";
 $res_contenido = $conn->query($sql_contenido);
+
 $contenido_manual = [];
-while($row = $res_contenido->fetch_assoc()){
-    $contenido_manual[] = $row;
+if ($res_contenido) {
+    while($row = $res_contenido->fetch_assoc()){
+        $contenido_manual[] = $row;
+    }
 }
 
-$config_json = $juego['configuracion'] ?: '{}';
+$config_json = !empty($juego['configuracion']) ? $juego['configuracion'] : '{}';
 ?>
 
 <script>
@@ -83,12 +85,11 @@ $config_json = $juego['configuracion'] ?: '{}';
     }
     .btn-icon:hover { transform: scale(1.1); }
 
-    /* --- FLECHA ANIMADA EXAGERADA --- */
+    /* --- FLECHA ANIMADA --- */
     .btn-hint {
         position: absolute;
-        right: 100%; /* A la izquierda del botón */
-        margin-right: 10px; /* Espacio */
-        
+        right: 100%; 
+        margin-right: 10px; 
         background: #FFB347; 
         color: white;
         padding: 8px 15px;
@@ -96,17 +97,13 @@ $config_json = $juego['configuracion'] ?: '{}';
         font-size: 0.9rem;
         font-weight: 900;
         box-shadow: 0 5px 15px rgba(255, 179, 71, 0.5);
-        
-        /* Animación de rebote lateral fuerte */
         animation: senalarFuerte 0.8s infinite ease-in-out;
-        
         pointer-events: none; 
         white-space: nowrap;
         display: flex; align-items: center; gap: 8px;
         z-index: 10;
     }
     
-    /* Triangulito del globo */
     .btn-hint::after {
         content: ''; position: absolute; right: -8px; top: 50%; margin-top: -8px;
         border-width: 8px; border-style: solid;
@@ -115,11 +112,10 @@ $config_json = $juego['configuracion'] ?: '{}';
 
     @keyframes senalarFuerte {
         0% { transform: translateX(0); }
-        50% { transform: translateX(-15px); } /* Se mueve 15px a la izquierda */
+        50% { transform: translateX(-15px); } 
         100% { transform: translateX(0); }
     }
 
-    /* Ocultar flecha en fullscreen */
     .game-card:fullscreen .btn-hint { display: none; }
 
 </style>
@@ -168,7 +164,6 @@ $config_json = $juego['configuracion'] ?: '{}';
         const hint = document.getElementById("hint-full");
 
         if (!document.fullscreenElement) {
-            // Entrar
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
             } else if (elem.webkitRequestFullscreen) { 
@@ -177,12 +172,9 @@ $config_json = $juego['configuracion'] ?: '{}';
                 elem.msRequestFullscreen();
             }
             icon.classList.replace('fa-expand', 'fa-compress');
-            
-            // Ocultar la flecha inmediatamente al entrar
             if(hint) hint.style.display = 'none';
             
         } else {
-            // Salir
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             } else if (document.webkitExitFullscreen) { 
