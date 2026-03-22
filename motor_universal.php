@@ -3,7 +3,7 @@
     .motor-area { 
         width: 100%; max-width: 800px; margin: 0 auto; 
         text-align: center; user-select: none; position: relative; 
-        padding-bottom: 150px; /* Espacio para el botón siguiente en escritorio */
+        padding-bottom: 10px; /* Espacio para el botón siguiente en escritorio */
     }
     
     .instruccion-juego {
@@ -67,32 +67,32 @@
 
     /* TEXTO DE REFUERZO (NOMBRE GIGANTE) */
     #texto-refuerzo {
-        position: absolute; 
-        top: 550px; /* Posición escritorio */
-        left: 50%; 
-        transform: translateX(-50%) scale(0);
+        position: relative !important; 
+        margin: 10px auto;
+        transform: scale(0);
         font-size: 2.5rem; font-weight: 900; color: #444; 
         z-index: 2001; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         opacity: 0; background: rgba(255,255,255,0.9); padding: 15px 40px; border-radius: 50px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #88B04B;
         white-space: nowrap; font-family: 'Nunito', sans-serif;
-        max-width: 90%; /* Para que no se salga en móviles si es muy largo */
+        max-width: 90%; text-align: center; width: fit-content;
     }
-    #texto-refuerzo.visible { transform: translateX(-50%) scale(1); opacity: 1; }
+    #texto-refuerzo.visible { transform: scale(1) !important; opacity: 1; display: block; }
 
     /* BOTÓN SIGUIENTE (CONTROL MANUAL) */
     #btn-siguiente {
-        display: none; position: absolute; 
-        bottom: 100px; /* Posición escritorio */
-        left: 50%; transform: translateX(-50%);
+        display: none; 
+        position: relative !important; 
+        margin: 20px auto 40px auto;
         background: var(--color-primario); color: white; border: none;
         padding: 15px 50px; font-size: 1.5rem; font-weight: 800; border-radius: 50px;
         cursor: pointer; box-shadow: 0 10px 20px rgba(146, 168, 209, 0.4);
-        z-index: 3000; animation: palpitar 1.5s infinite;
-        font-family: 'Nunito', sans-serif;
+        z-index: 3000; animation: palpitarNuevo 1.5s infinite;
+        font-family: 'Nunito', sans-serif; text-align: center;
     }
-    @keyframes palpitar { 0%{transform: translateX(-50%) scale(1);} 50%{transform: translateX(-50%) scale(1.05);} 100%{transform: translateX(-50%) scale(1);} }
+    @keyframes palpitarNuevo { 0%{transform: scale(1);} 50%{transform: scale(1.05);} 100%{transform: scale(1);} }
 
+    
     /* ESTILOS RESTANTES */
     .btn-audio-float { position: absolute; bottom: 15px; right: 15px; width: 50px; height: 50px; border-radius: 50%; background: #92A8D1; color: white; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
     .btn-audio-float:hover { transform: scale(1.1); }
@@ -151,19 +151,17 @@
         .texto-opcion { font-size: 1rem; }
 
         /* ANIMACIÓN FINAL EN CELULAR (Formato Vertical) */
-        /* El JS se encargará de las posiciones de las imágenes, aquí ajustamos textos */
+        .motor-area { padding-bottom: 20px; } 
         #texto-refuerzo {
-            top: auto !important; /* Anula el top de escritorio */
-            bottom: 90px; /* Se posiciona desde abajo */
-            font-size: 1.8rem;
-            padding: 10px 20px;
-            white-space: normal; /* Permite que el texto baje de renglón si es largo */
+            font-size: 1.5rem !important;
+            white-space: normal !important;
         }
         #btn-siguiente {
-            bottom: 20px !important; /* Más pegado al fondo */
-            padding: 10px 30px;
-            font-size: 1.2rem;
+            padding: 10px 30px !important;
+            font-size: 1.2rem !important;
         }
+
+        /* Otros juegos */
 
         /* Otros juegos */
         .grid-memoria { grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -232,6 +230,9 @@
         voladores.forEach(v => v.remove());
         const caja = document.getElementById('caja-principal');
         if(caja) { caja.style.transform = "none"; caja.style.opacity = "1"; }
+        
+        document.getElementById('lienzo-juego').style.height = 'auto'; // Resetea la altura
+        
         indice++;
         initSeleccion();
     };
@@ -304,7 +305,13 @@
             const imgOpcion = document.getElementById(`img-opt-${idBtn}`);
             
             document.getElementById('grid-opciones').style.opacity = '0'; 
+            setTimeout(() => { 
+                document.getElementById('grid-opciones').style.display = 'none'; 
+                // Esto mantiene la caja firme para que aloje la animación y empuje el texto abajo
+                document.getElementById('lienzo-juego').style.height = esCelular ? '400px' : '350px';
+            }, 400); 
 
+            // --- LÓGICA DE ANIMACIÓN SEGÚN DISPOSITIVO ---
             // --- LÓGICA DE ANIMACIÓN SEGÚN DISPOSITIVO ---
             let destinoTopClon, destinoLeftClon, destinoWidthClon, destinoHeightClon;
 

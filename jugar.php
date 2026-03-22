@@ -118,6 +118,18 @@ $config_json = !empty($juego['configuracion']) ? $juego['configuracion'] : '{}';
 
     .game-card:fullscreen .btn-hint { display: none; }
 
+    /* --- FIX MÓVIL: Evitar scroll y arreglar header --- */
+    @media (max-width: 768px) {
+        .game-wrapper { padding: 5px; min-height: auto; }
+        .game-card { border-radius: 15px; margin-bottom: 5px; }
+        .game-header { padding: 10px; }
+        .game-header h2 { font-size: 1.1rem !important; }
+        .btn-hint { display: none !important; } /* Ocultar el cartel molesto */
+        .btn-icon { width: 35px; height: 35px; font-size: 1rem; }
+        .header-actions { gap: 8px; }
+        .header-actions .btn-grande { padding: 6px 15px !important; font-size: 0.9rem !important; }
+        .game-area { padding: 10px; min-height: auto; }
+    }
 </style>
 
 <div class="game-wrapper">
@@ -130,7 +142,7 @@ $config_json = !empty($juego['configuracion']) ? $juego['configuracion'] : '{}';
             <div class="header-actions">
                 
                 <div class="btn-hint" id="hint-full">
-                    ¡Pantalla Completa! <i class="fa-solid fa-arrow-right-long"></i>
+                    Grande <i class="fa-solid fa-arrow-right-long"></i>
                 </div>
 
                 <button class="btn-icon" style="background:var(--color-primario);" onclick="toggleFullScreen()" title="Pantalla Completa">
@@ -144,16 +156,23 @@ $config_json = !empty($juego['configuracion']) ? $juego['configuracion'] : '{}';
         </div>
 
         <div class="game-area" id="contenedor-juego">
-            <?php 
-                if ($juego['tipo_juego'] == 'texto_drag') {
-                    include 'motores/motor_texto_drag.php';
-                } else if ($juego['tipo_juego'] == 'asociacion') {
-                     include 'motores/motor_universal.php'; 
-                } else {
-                    include 'motores/motor_universal.php';
-                }
-            ?>
-        </div>
+    <?php 
+        $tipo = $juego['tipo_juego'];
+
+        if ($tipo == 'texto_drag') {
+            include 'motores/motor_texto_drag.php';
+        } 
+        else if ($tipo == 'verbos') {
+            include 'motores/motor_verbos.php'; 
+        } 
+        else if ($tipo == 'pronombres') {
+            include 'motores/motor_pronombres.php';
+        }
+        else {
+            include 'motores/motor_universal.php';
+        }
+    ?>
+</div>
     </div>
 </div>
 
