@@ -3,7 +3,7 @@ session_start();
 require '../includes/db_connect.php';
 if (!isset($_SESSION['usuario_id'])) { header("Location: listar_juegos.php"); exit; }
 
-$id = ''; $titulo = ''; $descripcion = ''; $instrucciones = ''; 
+$id = ''; $titulo = ''; $descripcion = ''; $instrucciones = ''; $tipo_juego = 'seleccion';
 $instruccion_jugador = ''; $activo = 1; $imagen_actual = 'default.jpg';
 $id_categoria = 1;
 // Valores por defecto para los tags manuales
@@ -23,6 +23,7 @@ if (isset($_GET['id'])) {
         $activo = $row['activo'];
         $imagen_actual = $row['imagen_portada'];
         $id_categoria = $row['id_categoria'];
+        $tipo_juego = $row['tipo_juego'];
         // Cargar estado de los checkboxes
         $tag_peques = $row['tag_peques'];
         $tag_escolar = $row['tag_escolar'];
@@ -58,13 +59,15 @@ $cats = $conn->query("SELECT * FROM categorias_blog");
                 <input type="text" name="titulo" value="<?php echo htmlspecialchars($titulo); ?>" required>
             </div>
             <div class="col-md-4 form-group">
-                <label>Categoría Principal</label>
-                <select name="id_categoria">
-                    <?php while($c = $cats->fetch_assoc()): ?>
-                        <option value="<?php echo $c['id']; ?>" <?php echo ($c['id'] == $id_categoria)?'selected':''; ?>>
-                            <?php echo $c['nombre']; ?>
-                        </option>
-                    <?php endwhile; ?>
+                <label>Mecánica del Juego</label>
+                <select name="tipo_juego">
+                    <option value="seleccion" <?php echo ($tipo_juego=='seleccion')?'selected':''; ?>>Selección Simple</option>
+                    <option value="memoria" <?php echo ($tipo_juego=='memoria')?'selected':''; ?>>Memoria</option>
+                    <option value="secuencia" <?php echo ($tipo_juego=='secuencia')?'selected':''; ?>>Secuencia</option>
+                    <option value="verbos" <?php echo ($tipo_juego=='verbos')?'selected':''; ?>>Verbos</option>
+                    <option value="pronombres" <?php echo ($tipo_juego=='pronombres')?'selected':''; ?>>Pronombres</option>
+                    <option value="texto_drag" <?php echo ($tipo_juego=='texto_drag')?'selected':''; ?>>Arrastrar Texto</option>
+                    <option value="puzzle" <?php echo ($tipo_juego=='puzzle')?'selected':''; ?>>Rompecabezas (Puzzle)</option>
                 </select>
             </div>
         </div>
@@ -97,14 +100,23 @@ $cats = $conn->query("SELECT * FROM categorias_blog");
         </div>
 
         <div class="row">
-            <div class="col-md-6 form-group">
+            <div class="col-md-4 form-group">
+                <label>Mecánica del Juego</label>
+                <select name="tipo_juego">
+                    <?php $tipo_actual = isset($row['tipo_juego']) ? $row['tipo_juego'] : 'seleccion'; ?>
+                    <option value="seleccion" <?php echo ($tipo_actual=='seleccion')?'selected':''; ?>>Selección Simple</option>
+                    <option value="texto_drag" <?php echo ($tipo_actual=='texto_drag')?'selected':''; ?>>Arrastrar Texto</option>
+                    <option value="verbos" <?php echo ($tipo_actual=='verbos')?'selected':''; ?>>🌟 Conjugación de Verbos</option>
+                </select>
+            </div>
+            <div class="col-md-4 form-group">
                 <label>Estado</label>
                 <select name="activo">
                     <option value="1" <?php echo ($activo==1)?'selected':''; ?>>Activo</option>
                     <option value="0" <?php echo ($activo==0)?'selected':''; ?>>Oculto</option>
                 </select>
             </div>
-            <div class="col-md-6 form-group">
+            <div class="col-md-4 form-group">
                 <label>Portada</label>
                 <?php if($imagen_actual) echo "<img src='../$imagen_actual' height='40' class='me-2'>"; ?>
                 <input type="file" name="nueva_imagen" accept="image/*">

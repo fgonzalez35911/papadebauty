@@ -200,6 +200,14 @@ if (isset($_GET['del'])) {
                         </div>
                     </div>
 
+                    <?php if($id_juego == 88): ?>
+                    <div class="mb-3 p-3 shadow-sm" style="background: #e8f4f8; border-radius: 10px; border: 2px dashed #92A8D1;">
+                        <label class="form-label fw-bold text-primary"><i class="fa-solid fa-user"></i> Foto de quien habla (Izquierda)</label>
+                        <input type="file" name="imagen_extra" class="form-control" accept="image/*">
+                        <small class="text-muted">Sube aquí la foto de Bauti o Papá. Esto NO afecta a otros juegos.</small>
+                    </div>
+                    <?php endif; ?>
+
                     <hr>
 
                     <div class="mb-3">

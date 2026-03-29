@@ -4,6 +4,7 @@ if (!isset($_SESSION['usuario_id']) || $_SERVER['REQUEST_METHOD'] != 'POST') { h
 
 $id = $_POST['id'];
 $titulo = $_POST['titulo'];
+$tipo_juego = $_POST['tipo_juego'];
 $id_categoria = intval($_POST['id_categoria']); // Categoría manual
 $descripcion = $_POST['descripcion'];
 $instruccion_jugador = $_POST['instruccion_jugador'];
@@ -22,16 +23,16 @@ if (isset($_FILES['nueva_imagen']) && $_FILES['nueva_imagen']['name'] != '') {
 }
 
 if(empty($id)) {
-    // INSERT con tags manuales
+    // INSERT con tipo_juego dinámico
     $sql = "INSERT INTO juegos (titulo, id_categoria, descripcion, instruccion_jugador, activo, imagen_portada, tag_peques, tag_escolar, tag_teen, id_motor, tipo_juego) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 4, 'seleccion')";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 4, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sissisiii", $titulo, $id_categoria, $descripcion, $instruccion_jugador, $activo, $imagen_final, $tag_peques, $tag_escolar, $tag_teen);
+    $stmt->bind_param("sissisiiis", $titulo, $id_categoria, $descripcion, $instruccion_jugador, $activo, $imagen_final, $tag_peques, $tag_escolar, $tag_teen, $tipo_juego);
 } else {
-    // UPDATE con tags manuales
-    $sql = "UPDATE juegos SET titulo=?, id_categoria=?, descripcion=?, instruccion_jugador=?, activo=?, imagen_portada=?, tag_peques=?, tag_escolar=?, tag_teen=? WHERE id=?";
+    // UPDATE con tipo_juego dinámico
+    $sql = "UPDATE juegos SET titulo=?, id_categoria=?, descripcion=?, instruccion_jugador=?, activo=?, imagen_portada=?, tag_peques=?, tag_escolar=?, tag_teen=?, tipo_juego=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sissisiiii", $titulo, $id_categoria, $descripcion, $instruccion_jugador, $activo, $imagen_final, $tag_peques, $tag_escolar, $tag_teen, $id);
+    $stmt->bind_param("sissisiiiis", $titulo, $id_categoria, $descripcion, $instruccion_jugador, $activo, $imagen_final, $tag_peques, $tag_escolar, $tag_teen, $tipo_juego, $id);
 }
 
 if ($stmt->execute()) { header("Location: listar_juegos.php?exito=1"); } else { echo "Error: " . $conn->error; }
