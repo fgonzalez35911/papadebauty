@@ -165,7 +165,7 @@ $config_json = !empty($juego['configuracion']) ? $juego['configuracion'] : '{}';
         else if ($tipo == 'verbos') {
             include 'motores/motor_verbos.php'; 
         } 
-        else if ($tipo == 'pronombres') {
+        else if ($tipo == 'pronombres' || $juego['id'] == 88) {
             include 'motores/motor_pronombres.php';
         }
         else {

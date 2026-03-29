@@ -118,11 +118,11 @@ $img_gal_3 = get_img_home('img_galeria_3', 'assets/img/papaybau1.jpeg');
 
     /* RESPONSIVE */
     @media (max-width: 900px) {
-        .hero { padding-top: 110px; padding-bottom: 40px; min-height: 85vh; justify-content: flex-start; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        .hero p { font-size: 1.1rem; margin-bottom: 25px; padding: 10px; }
-        .hero-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
-        .btn-hero { width: 100%; justify-content: center; margin: 0; box-sizing: border-box; padding: 15px 20px; font-size: 1rem; }
+        .hero { padding-top: 110px; padding-bottom: 40px; min-height: 85vh; justify-content: flex-start; align-items: center; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 10px; text-align: center; }
+        .hero p { font-size: 1.1rem; margin-bottom: 25px; padding: 10px; text-align: center; }
+        .hero-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin: 0 auto; align-items: center; }
+        .btn-hero { width: 100%; justify-content: center; margin: 0 auto; box-sizing: border-box; padding: 15px 20px; font-size: 1rem; text-align: center; }
         .section-bio { grid-template-columns: 1fr; padding: 60px 20px; }
         .target-grid, .metodo-grid { grid-template-columns: 1fr; }
     }
