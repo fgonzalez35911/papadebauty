@@ -98,7 +98,17 @@
     
     function loadLevel() {
         if(index >= items.length) {
-            document.querySelector('.pronombre-wrapper').innerHTML = "<h2>¡Excelente trabajo!</h2><button onclick='location.reload()'>Repetir</button>";
+            document.querySelector('.pronombre-wrapper').innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; width: 100%; box-sizing: border-box;">
+                    <div style="background: white; padding: 30px 15px; border-radius: 30px; box-shadow: 0 10px 30px rgba(146, 168, 209, 0.4); text-align: center; border: 6px solid #FFD700; width: 100%; max-width: 400px; box-sizing: border-box;">
+                        <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:4rem;"></i>
+                        <h2 style="font-size: 2rem; color: #92A8D1; margin: 10px 0 0 0; font-weight: 900;">¡Excelente! 🌟</h2>
+                        <p style="font-size: 1.1rem; color: #666; margin: 10px 0 20px 0;">¡Lo hiciste muy bien!</p>
+                        <button onclick="location.reload()" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #88B04B; color: white; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(136, 176, 75, 0.4); box-sizing: border-box;"><i class="fa-solid fa-rotate-right"></i> Jugar otra vez</button>
+                        <a href="juegos.php" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #f0f0f0; color: #666; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none; box-sizing: border-box;"><i class="fa-solid fa-house"></i> Volver al menú</a>
+                    </div>
+                </div>
+            `;
             return;
         }
 
@@ -115,15 +125,23 @@
         document.getElementById('perspectiva-actual').style.background = habloYo ? "#92A8D1" : "#F7CAC9";
         document.getElementById('instruccion-habla').innerText = txtPregunta;
         
-        // Imágenes corregidas (sin el ../)
-        const sujetoImg = data.imagen_extra ? data.imagen_extra.toLowerCase() : "default";
-        document.getElementById('img-sujeto').src = "assets/img/sujetos/" + sujetoImg + ".png";
-        document.getElementById('img-objeto').src = data.imagen || "assets/img/iconos/box.png";
-        document.getElementById('txt-sujeto').innerText = data.imagen_extra || "DUEÑO";
+        // Imagen subida desde el panel (Izquierda)
+        let imgIzq = data.imagen_extra && data.imagen_extra.includes('assets') ? data.imagen_extra : "assets/img/iconos/user.png";
+        document.getElementById('img-sujeto').src = imgIzq.replace('../', '');
+        
+        // Imagen Central del Objeto (Derecha)
+        let imgDer = data.imagen ? data.imagen : "assets/img/iconos/box.png";
+        document.getElementById('img-objeto').src = imgDer.replace('../', '');
+
+        // Etiqueta inteligente según la pregunta
+        let nombreP = "DUEÑO";
+        if(txtPregunta.toLowerCase().includes('bauti')) nombreP = "BAUTI";
+        if(txtPregunta.toLowerCase().includes('papá') || txtPregunta.toLowerCase().includes('papa')) nombreP = "PAPÁ";
+        document.getElementById('txt-sujeto').innerText = nombreP;
 
         // Mezclar opciones
-        let ops = [data.palabra_correcta, data.distractor1, data.distractor2, data.distractor3]
-                   .filter(o => o && o.trim() !== "").sort(() => Math.random() - 0.5);
+        let ops_crudas = [data.palabra_correcta, data.distractor1, data.distractor2, data.distractor3].filter(o => o && o.trim() !== "");
+        let ops = ops_crudas.sort((a, b) => a.localeCompare(b));
 
         grid.innerHTML = "";
         ops.forEach(txt => {
@@ -133,7 +151,21 @@
             btn.onclick = () => {
                 if(txt === data.palabra_correcta) {
                     btn.classList.add('correct');
-                    setTimeout(() => { index++; loadLevel(); }, 1000);
+                    
+                    // Sonido de acierto rápido (idéntico al de la granja)
+                    try {
+                        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                        if(audioCtx.state === 'suspended') audioCtx.resume();
+                        const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                        osc.connect(g); g.connect(audioCtx.destination);
+                        osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+                        osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime+0.1);
+                        osc.type='sine'; g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime+0.3);
+                        osc.start(); osc.stop(audioCtx.currentTime+0.3);
+                    } catch(e) {}
+
+                    // Pasar rapidísimo a la siguiente (300 milisegundos en lugar de 1000)
+                    setTimeout(() => { index++; loadLevel(); }, 300);
                 } else {
                     btn.classList.add('wrong');
                     setTimeout(() => btn.classList.remove('wrong'), 500);

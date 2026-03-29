@@ -71,10 +71,14 @@
 
 <div id="workspace" class="area-juego-mate"></div>
 
-<div id="pantalla-win">
-    <h1 style="color: #88B04B; font-size: 3rem;">¡CORRECTO! 🌟</h1>
-    <div style="font-size: 5rem;">🎉</div>
-    <button onclick="siguienteNivel()" class="btn-grande btn-jugar" style="margin-top: 20px;">Siguiente Nivel</button>
+<div id="pantalla-win" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.95); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box;">
+    <div style="background: white; padding: 30px 15px; border-radius: 30px; box-shadow: 0 10px 30px rgba(146, 168, 209, 0.4); text-align: center; border: 6px solid #FFD700; width: 100%; max-width: 400px; box-sizing: border-box;">
+        <i class="fa-solid fa-star" style="color:#FFD700; font-size:4rem;"></i>
+        <h2 style="font-size: 2rem; color: #92A8D1; margin: 10px 0 0 0; font-weight: 900;">¡Correcto! 🌟</h2>
+        <p style="font-size: 1.1rem; color: #666; margin: 10px 0 20px 0;">¡Lo hiciste muy bien!</p>
+        <button onclick="siguienteNivel()" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #88B04B; color: white; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(136, 176, 75, 0.4); box-sizing: border-box;">Siguiente Nivel <i class="fa-solid fa-arrow-right"></i></button>
+        <a href="juegos.php" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #f0f0f0; color: #666; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none; box-sizing: border-box;"><i class="fa-solid fa-house"></i> Volver al menú</a>
+    </div>
 </div>
 
 <script>

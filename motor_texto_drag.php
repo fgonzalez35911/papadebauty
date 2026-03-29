@@ -9,23 +9,23 @@
         padding-bottom: 100px; overflow-x: hidden; 
     }
 
-    /* --- PANTALLA FINAL --- */
+    /* --- PANTALLA FINAL ESTANDARIZADA --- */
     .final-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
         z-index: 10000;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         animation: fadeIn 0.5s ease-out;
+        padding: 15px; box-sizing: border-box;
     }
 
     .winner-card {
-        background: white; padding: 40px 30px; border-radius: 40px;
+        background: white; padding: 30px 15px; border-radius: 30px;
         text-align: center; 
-        box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         border: 6px solid #FFD700;
-        width: 90%; max-width: 500px;
-        position: relative; z-index: 10;
-        animation: bounceIn 1s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        width: 100%; max-width: 400px;
+        box-sizing: border-box;
     }
 
     .winner-title {

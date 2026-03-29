@@ -22,8 +22,8 @@
         background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;
     }
     .info-card {
-        background: white; width: 90%; max-width: 400px; border-radius: 20px;
-        padding: 20px; text-align: center; position: relative;
+        background: white; width: 100%; max-width: 400px; border-radius: 20px;
+        padding: 20px 15px; text-align: center; position: relative; box-sizing: border-box; margin: 0 15px;
     }
     .info-img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; background: #eee; }
     .btn-cerrar {

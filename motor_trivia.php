@@ -75,16 +75,15 @@ $json_preguntas = json_encode($array_preguntas);
         </div>
     </div>
 
-    <div id="pantalla-final">
-        <h2>¡Juego Terminado!</h2>
-        <p>Tu puntaje final es:</p>
-        <div class="puntaje-grande"><span id="score-final">0</span>/100</div>
-        <p id="mensaje-final" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
-        
-        <button onclick="location.reload()" class="btn-grande btn-jugar">
-            <i class="fa-solid fa-rotate-right"></i> Jugar Otra Vez
-        </button>
-        <a href="juegos.php" class="btn-grande btn-padres" style="margin-top:10px;">Salir</a>
+    <div id="pantalla-final" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 15px; width: 100%; box-sizing: border-box; position: absolute; top: 0; left: 0; height: 100%; background: rgba(255,255,255,0.95); z-index: 100;">
+        <div style="background: white; padding: 30px 15px; border-radius: 30px; box-shadow: 0 10px 30px rgba(146, 168, 209, 0.4); text-align: center; border: 6px solid #FFD700; width: 100%; max-width: 400px; box-sizing: border-box;">
+            <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:4rem;"></i>
+            <h2 style="font-size: 2rem; color: #92A8D1; margin: 10px 0 0 0; font-weight: 900;">¡Juego Terminado!</h2>
+            <div style="font-size: 3rem; color: var(--color-primario); margin: 15px 0; font-weight: 800;"><span id="score-final">0</span>/100</div>
+            <p id="mensaje-final" style="font-size: 1.1rem; color: #666; margin: 10px 0 20px 0;"></p>
+            <button onclick="location.reload()" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #88B04B; color: white; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(136, 176, 75, 0.4); box-sizing: border-box;"><i class="fa-solid fa-rotate-right"></i> Jugar otra vez</button>
+            <a href="juegos.php" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #f0f0f0; color: #666; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none; box-sizing: border-box;"><i class="fa-solid fa-house"></i> Volver al menú</a>
+        </div>
     </div>
 
 </div>

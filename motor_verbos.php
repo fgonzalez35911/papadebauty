@@ -106,9 +106,15 @@
     function initVerbGame() {
         if(globalIndex >= contenidoJuego.length) {
             document.querySelector('.verb-container').innerHTML = `
-                <h2 style="color:#06D6A0; font-size:4rem; margin-top:50px;"><i class="fa-solid fa-trophy"></i> ¡GANASTE EL JUEGO!</h2>
-                <p style="font-size:1.5rem; color:#555;">¡Completaste todos los niveles!</p>
-                <button onclick="location.reload()" class="verb-btn" style="margin-top:30px;">Jugar de nuevo</button>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; width: 100%; box-sizing: border-box;">
+                    <div style="background: white; padding: 30px 15px; border-radius: 30px; box-shadow: 0 10px 30px rgba(146, 168, 209, 0.4); text-align: center; border: 6px solid #FFD700; width: 100%; max-width: 400px; box-sizing: border-box;">
+                        <i class="fa-solid fa-trophy" style="color:#FFD700; font-size:4rem;"></i>
+                        <h2 style="font-size: 2rem; color: #92A8D1; margin: 10px 0 0 0; font-weight: 900;">¡Excelente! 🌟</h2>
+                        <p style="font-size: 1.1rem; color: #666; margin: 10px 0 20px 0;">¡Lo hiciste muy bien!</p>
+                        <button onclick="location.reload()" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #88B04B; color: white; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(136, 176, 75, 0.4); box-sizing: border-box;"><i class="fa-solid fa-rotate-right"></i> Jugar otra vez</button>
+                        <a href="juegos.php" style="display: block; width: 100%; padding: 15px; border-radius: 50px; background: #f0f0f0; color: #666; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none; box-sizing: border-box;"><i class="fa-solid fa-house"></i> Volver al menú</a>
+                    </div>
+                </div>
             `;
             return;
         }

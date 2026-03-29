@@ -101,12 +101,12 @@
     
     /* PANTALLA FINAL */
     #pantalla-victoria { display: none; flex-direction: column; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 5000; animation: entradaSuave 0.5s ease-out; }
-    .tarjeta-ganador { background: white; padding: 40px; border-radius: 40px; box-shadow: 0 20px 50px rgba(146, 168, 209, 0.4); text-align: center; border: 6px solid #FFD700; max-width: 90%; width: 450px; position: relative; z-index: 5001; }
-    .titulo-ganador { font-size: 2.5rem; color: var(--color-primario); margin: 0; font-weight: 900; }
-    .subtitulo-ganador { font-size: 1.2rem; color: #666; margin: 10px 0 30px 0; }
-    .btn-reiniciar { display: block; width: 100%; padding: 18px; border-radius: 50px; background: #88B04B; color: white; font-size: 1.2rem; font-weight: 800; border: none; cursor: pointer; text-decoration: none; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(136, 176, 75, 0.4); transition: transform 0.2s; margin-top:20px; }
+    .tarjeta-ganador { background: white; padding: 30px 15px; border-radius: 30px; box-shadow: 0 10px 30px rgba(146, 168, 209, 0.4); text-align: center; border: 6px solid #FFD700; max-width: 90%; width: 400px; position: relative; z-index: 5001; box-sizing: border-box; }
+    .titulo-ganador { font-size: 2rem; color: var(--color-primario); margin: 0; font-weight: 900; }
+    .subtitulo-ganador { font-size: 1.1rem; color: #666; margin: 10px 0 20px 0; }
+    .btn-reiniciar { display: block; width: 100%; padding: 15px; border-radius: 50px; background: #88B04B; color: white; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; text-decoration: none; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(136, 176, 75, 0.4); transition: transform 0.2s; margin-top:20px; box-sizing: border-box; }
     .btn-reiniciar:hover { transform: scale(1.05); }
-    .btn-salir { display: block; width: 100%; padding: 15px; border-radius: 50px; background: #f0f0f0; color: #666; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none; }
+    .btn-salir { display: block; width: 100%; padding: 15px; border-radius: 50px; background: #f0f0f0; color: #666; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none; box-sizing: border-box; }
     #confeti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; }
     @keyframes entradaSuave { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
@@ -307,24 +307,29 @@
             document.getElementById('grid-opciones').style.opacity = '0'; 
             setTimeout(() => { 
                 document.getElementById('grid-opciones').style.display = 'none'; 
-                // Esto mantiene la caja firme para que aloje la animación y empuje el texto abajo
-                document.getElementById('lienzo-juego').style.height = esCelular ? '400px' : '350px';
+                
+                // LÓGICA INTELIGENTE: Depende de si hay imagen en la respuesta o solo texto
+                if (imgOpcion) {
+                    // Hay imagen (Ej: La Casa): dejamos espacio para que queden una abajo de la otra
+                    document.getElementById('lienzo-juego').style.height = esCelular ? '380px' : '350px';
+                } else {
+                    // No hay imagen (Ej: La Granja): matamos el espacio gigante para no scrollear
+                    document.getElementById('lienzo-juego').style.height = 'auto';
+                }
             }, 400); 
 
-            // --- LÓGICA DE ANIMACIÓN SEGÚN DISPOSITIVO ---
             // --- LÓGICA DE ANIMACIÓN SEGÚN DISPOSITIVO ---
             let destinoTopClon, destinoLeftClon, destinoWidthClon, destinoHeightClon;
 
             if(esCelular) {
                 // === MODO CELULAR (Vertical) ===
-                // 1. La caja principal sube un poquito y se achica
                 cajaPrincipal.style.transform = "translate(0, -10px) scale(0.9)"; 
                 
-                // 2. Destino del clon: DEBAJO de la caja principal
-                destinoTopClon = "200px"; // Justo debajo de la caja achicada
-                destinoLeftClon = "10%"; // Centrado (con margen)
-                destinoWidthClon = "80%"; 
-                destinoHeightClon = "180px";
+                // Destino del clon: Restaurado para que se ubique ABAJO de la principal
+                destinoTopClon = "180px"; 
+                destinoLeftClon = "15%"; 
+                destinoWidthClon = "70%"; 
+                destinoHeightClon = "160px";
                 
             } else {
                 // === MODO ESCRITORIO (Lado a Lado) ===
